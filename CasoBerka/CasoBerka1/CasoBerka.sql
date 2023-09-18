@@ -142,3 +142,46 @@ from client1
 -- MAGIC
 -- MAGIC # Imprime la dirección de la tabla guardada
 -- MAGIC print("La tabla se ha guardado en la siguiente dirección después de eliminar las columnas:", ruta_destino_despues_eliminar)
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC from pyspark.sql import SparkSession
+-- MAGIC from pyspark.sql.functions import count
+-- MAGIC
+-- MAGIC # Crear una sesión de Spark
+-- MAGIC spark = SparkSession.builder.appName("ConteoFrequency").getOrCreate()
+-- MAGIC
+-- MAGIC # Cargar tu DataFrame desde donde esté almacenado
+-- MAGIC ruta_a_tu_tabla_minable = "dbfs:/mnt/your-data-lake/tabla_minable"
+-- MAGIC tabla_minable = spark.read.parquet(ruta_a_tu_tabla_minable)
+-- MAGIC
+-- MAGIC # Calcular el conteo de cada categoría de "frequency" y mostrarlo en una tabla
+-- MAGIC conteo_frequency = tabla_minable.groupBy("frequency").agg(count("*").alias("count"))
+-- MAGIC conteo_frequency.show()
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC from pyspark.sql import SparkSession
+-- MAGIC from pyspark.sql.functions import count
+-- MAGIC
+-- MAGIC # Crear una sesión de Spark
+-- MAGIC spark = SparkSession.builder.appName("ConteoStatus").getOrCreate()
+-- MAGIC
+-- MAGIC # Cargar tu DataFrame desde donde esté almacenado
+-- MAGIC ruta_a_tu_tabla_minable = "dbfs:/mnt/your-data-lake/tabla_minable"
+-- MAGIC tabla_minable = spark.read.parquet(ruta_a_tu_tabla_minable)
+-- MAGIC
+-- MAGIC # Calcular el conteo de cada categoría de "status" y mostrarlo en una tabla
+-- MAGIC conteo_status = tabla_minable.groupBy("status").agg(count("*").alias("count"))
+-- MAGIC conteo_status.show()
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC # Selecciona las columnas cuantitativas
+-- MAGIC columnas_cuantitativas = ["date1", "date", "amount", "duration", "payments"]
+-- MAGIC
+-- MAGIC # Aplica la función describe a las columnas cuantitativas
+-- MAGIC tabla_minable.select(columnas_cuantitativas).describe().show()
